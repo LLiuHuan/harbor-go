@@ -2,7 +2,6 @@ package schema
 
 import "time"
 
-// Project holds the details of a project.
 type Project struct {
 	ProjectID    int64             `json:"project_id"`
 	OwnerID      int               `json:"owner_id"`
@@ -18,4 +17,12 @@ type Project struct {
 	Metadata     map[string]string `json:"metadata"`
 	CVEAllowlist CVEAllowlist      `json:"cve_allowlist"`
 	RegistryID   int64             `json:"registry_id"`
+}
+
+type ProjectListOptions struct {
+	Page     string
+	PageSize string
+	Name     string
+	Owner    string
+	Public   *bool
 }

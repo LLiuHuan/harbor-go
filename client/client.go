@@ -27,7 +27,6 @@ type BasicAuth struct {
 type Client struct {
 	client    *http.Client
 	host      string
-	hostname  string
 	basicAuth *BasicAuth
 	version   string
 	scheme    string
@@ -44,13 +43,11 @@ func NewClientWithOpts(opts ...Opt) (*Client, error) {
 		scheme:    "http",
 		basePath:  "/api",
 	}
-
 	for _, opt := range opts {
 		if err := opt(c); err != nil {
 			return nil, err
 		}
 	}
-
 	return c, nil
 }
 
