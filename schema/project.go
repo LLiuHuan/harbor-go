@@ -26,3 +26,22 @@ type ProjectListOptions struct {
 	Owner    string `json:"owner"`
 	Public   *bool  `json:"public" not:"true"`
 }
+
+type PostProjectMetadataOptions struct {
+	ProjectID int64                  `json:"project_id" not:"true"`
+	Metadata  ProjectMetadataOptions `json:"metadata"`
+}
+
+type ProjectMetadataOptions struct {
+	EnableContentTrust   string `json:"enable_content_trust"`
+	AutoScan             string `json:"auto_scan"`
+	Severity             string `json:"severity"`
+	Public               string `json:"public"`
+	ReuseSysCveAllowlist string `json:"reuse_sys_cve_allowlist"`
+	PreventVul           string `json:"prevent_vul"`
+	RetentionId          string `json:"retention_id"`
+}
+
+type GetProjectMetadataOptions struct {
+	ProjectID int64 `json:"project_id"`
+}
