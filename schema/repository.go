@@ -13,15 +13,26 @@ type Repository struct {
 	UpdateTime    time.Time `json:"update_time"`
 }
 
-type RepositoryListOptions struct {
-	ProjectName string
-	Q           string
-	Sort        string
-	Page        string
-	PageSize    string
+type GetRepositoryListOptions struct {
+	ProjectName string `json:"project_name" not:"true"`
+	Q           string `json:"q"`
+	Sort        string `json:"sort"`
+	Page        string `json:"page"`
+	PageSize    string `json:"page_size"`
 }
 
-type RepositoryGetOptions struct {
-	ProjectName    string
-	RepositoryName string
+type GetRepositoryByNameOptions struct {
+	ProjectName    string `json:"project_name" not:"true"`
+	RepositoryName string `json:"repository_name" not:"true"`
+}
+
+type PutRepositoryByNameOptions struct {
+	ProjectName    string      `json:"project_name" not:"true"`
+	RepositoryName string      `json:"repository_name" not:"true"`
+	Repository     *Repository `json:"repository"`
+}
+
+type DeleteRepositoryByNameOptions struct {
+	ProjectName    string `json:"project_name" not:"true"`
+	RepositoryName string `json:"repository_name" not:"true"`
 }

@@ -20,9 +20,9 @@ type Project struct {
 }
 
 type ProjectListOptions struct {
-	Page     string
-	PageSize string
-	Name     string
-	Owner    string
-	Public   *bool
+	Page     string `json:"page"`
+	PageSize string `json:"page_size"`
+	Name     string `json:"name"`
+	Owner    string `json:"owner"`
+	Public   *bool  `json:"public" not:"true"`
 }

@@ -3,7 +3,6 @@ package client
 import (
 	"context"
 	"encoding/json"
-	"net/url"
 
 	"github.com/lliuhuan/harbor-go/schema"
 )
@@ -15,30 +14,13 @@ const (
 func (cli *Client) ListProjects(ctx context.Context, options schema.ProjectListOptions) ([]schema.Project, error) {
 	var projects []schema.Project
 
-	query := url.Values{}
-
+	query := StructQuery(options)
 	if options.Public != nil {
 		if *options.Public {
 			query.Set("public", "1")
 		} else {
 			query.Set("public", "0")
 		}
-	}
-
-	if v := options.Name; v != "" {
-		query.Set("name", v)
-	}
-
-	if v := options.Owner; v != "" {
-		query.Set("owner", v)
-	}
-
-	if v := options.Page; v != "" {
-		query.Set("page", v)
-	}
-
-	if v := options.PageSize; v != "" {
-		query.Set("page_size", v)
 	}
 
 	serverResp, err := cli.get(ctx, PATH_LIST_PROJECT, query, nil)

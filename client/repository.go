@@ -4,45 +4,28 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/url"
 
 	"github.com/lliuhuan/harbor-go/schema"
 )
 
 const (
-	PATH_REPOSITORY_LIST = "/projects/%s/repositories"    // /projects/{project_name}/repositories
-	PATH_REPOSITORY_GET  = "/projects/%s/repositories/%s" // /projects/{project_name}/repositories/{repository_name}
+	PATH_GET_REPOSITORY_LIST       = "/projects/%s/repositories"    // /projects/{project_name}/repositories
+	PATH_GET_REPOSITORY_BY_NAME    = "/projects/%s/repositories/%s" // /projects/{project_name}/repositories/{repository_name}
+	PATH_PUT_REPOSITORY_BY_NAME    = "/projects/%s/repositories/%s" // /projects/{project_name}/repositories/{repository_name}
+	PATH_DELETE_REPOSITORY_BY_NAME = "/projects/%s/repositories/%s" // /projects/{project_name}/repositories/{repository_name}
 )
 
-func (cli *Client) ListRepository(ctx context.Context, options schema.RepositoryListOptions) ([]schema.Repository, error) {
+// GetRepositoryList List repositories of the specified project
+// url: /projects/{project_name}/repositories
+func (cli *Client) GetRepositoryList(ctx context.Context, options schema.GetRepositoryListOptions) ([]schema.Repository, error) {
 	var repository []schema.Repository
 
-	query := url.Values{}
-
-	if v := options.ProjectName; v != "" {
-		query.Set("project_name", v)
-	}
-
-	if v := options.Q; v != "" {
-		query.Set("q", v)
-	}
-
-	if v := options.Sort; v != "" {
-		query.Set("sort", v)
-	}
-
-	if v := options.Page; v != "" {
-		query.Set("page", v)
-	}
-
-	if v := options.PageSize; v != "" {
-		query.Set("page_size", v)
-	}
+	query := StructQuery(options)
 
 	//headers := make(map[string][]string)
 	//headers["Authorization"] = []string{"Basic bGg6TGl1SHVhbjEyMw=="}
 	//req.SetBasicAuth()
-	path := fmt.Sprintf(PATH_REPOSITORY_LIST, options.ProjectName)
+	path := fmt.Sprintf(PATH_GET_REPOSITORY_LIST, options.ProjectName)
 	serverResp, err := cli.get(ctx, path, query, nil)
 	defer ensureReaderClosed(serverResp)
 	if err != nil {
@@ -54,20 +37,14 @@ func (cli *Client) ListRepository(ctx context.Context, options schema.Repository
 	return repository, nil
 }
 
-func (cli *Client) GetRepository(ctx context.Context, options schema.RepositoryGetOptions) ([]schema.Repository, error) {
+// GetRepositoryByName Get the repository specified by name
+// url: /projects/{project_name}/repositories/{repository_name}
+func (cli *Client) GetRepositoryByName(ctx context.Context, options schema.GetRepositoryByNameOptions) ([]schema.Repository, error) {
 	var repository []schema.Repository
 
-	query := url.Values{}
+	query := StructQuery(options)
 
-	if v := options.ProjectName; v != "" {
-		query.Set("project_name", v)
-	}
-
-	if v := options.RepositoryName; v != "" {
-		query.Set("repository_name", v)
-	}
-
-	path := fmt.Sprintf(PATH_REPOSITORY_GET, options.ProjectName, options.RepositoryName)
+	path := fmt.Sprintf(PATH_GET_REPOSITORY_BY_NAME, options.ProjectName, options.RepositoryName)
 	serverResp, err := cli.get(ctx, path, query, nil)
 	defer ensureReaderClosed(serverResp)
 	if err != nil {
@@ -77,4 +54,38 @@ func (cli *Client) GetRepository(ctx context.Context, options schema.RepositoryG
 	err = json.NewDecoder(serverResp.body).Decode(&repository)
 
 	return repository, nil
+}
+
+// PutRepositoryBuName Update the repository specified by name
+// url: /projects/{project_name}/repositories/{repository_name}
+func (cli *Client) PutRepositoryBuName(ctx context.Context, options schema.PutRepositoryByNameOptions) (schema.CurrencyError, error) {
+	var resp schema.CurrencyError
+	query := StructQuery(options)
+
+	path := fmt.Sprintf(PATH_PUT_REPOSITORY_BY_NAME, options.ProjectName, options.RepositoryName)
+	serverResp, err := cli.put(ctx, path, query, nil, nil)
+	defer ensureReaderClosed(serverResp)
+	if err != nil {
+		return resp, err
+	}
+
+	err = json.NewDecoder(serverResp.body).Decode(&resp)
+	return resp, nil
+}
+
+// DeleteRepositoryBuName Delete the repository specified by name
+// url: /projects/{project_name}/repositories/{repository_name}
+func (cli *Client) DeleteRepositoryBuName(ctx context.Context, options schema.DeleteRepositoryByNameOptions) (schema.CurrencyError, error) {
+	var resp schema.CurrencyError
+	query := StructQuery(options)
+
+	path := fmt.Sprintf(PATH_PUT_REPOSITORY_BY_NAME, options.ProjectName, options.RepositoryName)
+	serverResp, err := cli.delete(ctx, path, query, nil)
+	defer ensureReaderClosed(serverResp)
+	if err != nil {
+		return resp, err
+	}
+
+	err = json.NewDecoder(serverResp.body).Decode(&resp)
+	return resp, nil
 }
