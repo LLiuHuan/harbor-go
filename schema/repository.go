@@ -32,7 +32,7 @@ type PutRepositoryByNameOptions struct {
 	Repository     *Repository `json:"repository"`
 }
 
-type DeleteRepositoryByNameOptions struct {
+type DelRepositoryByNameOptions struct {
 	ProjectName    string `json:"project_name" not:"true"`
 	RepositoryName string `json:"repository_name" not:"true"`
 }

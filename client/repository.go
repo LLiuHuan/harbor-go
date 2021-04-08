@@ -9,10 +9,10 @@ import (
 )
 
 const (
-	PATH_GET_REPOSITORY_LIST       = "/projects/%s/repositories"    // /projects/{project_name}/repositories
-	PATH_GET_REPOSITORY_BY_NAME    = "/projects/%s/repositories/%s" // /projects/{project_name}/repositories/{repository_name}
-	PATH_PUT_REPOSITORY_BY_NAME    = "/projects/%s/repositories/%s" // /projects/{project_name}/repositories/{repository_name}
-	PATH_DELETE_REPOSITORY_BY_NAME = "/projects/%s/repositories/%s" // /projects/{project_name}/repositories/{repository_name}
+	PATH_GET_REPOSITORY_LIST    = "/projects/%s/repositories"    // /projects/{project_name}/repositories
+	PATH_GET_REPOSITORY_BY_NAME = "/projects/%s/repositories/%s" // /projects/{project_name}/repositories/{repository_name}
+	PATH_PUT_REPOSITORY_BY_NAME = "/projects/%s/repositories/%s" // /projects/{project_name}/repositories/{repository_name}
+	PATH_DEL_REPOSITORY_BY_NAME = "/projects/%s/repositories/%s" // /projects/{project_name}/repositories/{repository_name}
 )
 
 // GetRepositoryList List repositories of the specified project
@@ -73,13 +73,13 @@ func (cli *Client) PutRepositoryBuName(ctx context.Context, options schema.PutRe
 	return resp, nil
 }
 
-// DeleteRepositoryBuName Delete the repository specified by name
+// DelRepositoryBuName Delete the repository specified by name
 // url: /projects/{project_name}/repositories/{repository_name}
-func (cli *Client) DeleteRepositoryBuName(ctx context.Context, options schema.DeleteRepositoryByNameOptions) (schema.CurrencyError, error) {
+func (cli *Client) DelRepositoryBuName(ctx context.Context, options schema.DelRepositoryByNameOptions) (schema.CurrencyError, error) {
 	var resp schema.CurrencyError
 	query := StructQuery(options)
 
-	path := fmt.Sprintf(PATH_PUT_REPOSITORY_BY_NAME, options.ProjectName, options.RepositoryName)
+	path := fmt.Sprintf(PATH_DEL_REPOSITORY_BY_NAME, options.ProjectName, options.RepositoryName)
 	serverResp, err := cli.delete(ctx, path, query, nil)
 	defer ensureReaderClosed(serverResp)
 	if err != nil {
