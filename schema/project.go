@@ -24,11 +24,11 @@ type ProjectListOptions struct {
 	PageSize string `json:"page_size"`
 	Name     string `json:"name"`
 	Owner    string `json:"owner"`
-	Public   *bool  `json:"public" not:"true"`
+	Public   *bool  `json:"public" query:"true"`
 }
 
 type PostProjectMetadataOptions struct {
-	ProjectID int64                  `json:"project_id" not:"true"`
+	ProjectID int64                  `json:"project_id" query:"false"`
 	Metadata  ProjectMetadataOptions `json:"metadata"`
 }
 

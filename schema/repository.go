@@ -14,25 +14,25 @@ type Repository struct {
 }
 
 type GetRepositoryListOptions struct {
-	ProjectName string `json:"project_name" not:"true"`
-	Q           string `json:"q"`
-	Sort        string `json:"sort"`
-	Page        string `json:"page"`
-	PageSize    string `json:"page_size"`
+	ProjectName string `json:"project_name" path:"true"`
+	Q           string `json:"q" query:"true"`
+	Sort        string `json:"sort" query:"true"`
+	Page        string `json:"page" query:"true"`
+	PageSize    string `json:"page_size" query:"true"`
 }
 
 type GetRepositoryByNameOptions struct {
-	ProjectName    string `json:"project_name" not:"true"`
-	RepositoryName string `json:"repository_name" not:"true"`
+	ProjectName    string `json:"project_name" path:"true"`
+	RepositoryName string `json:"repository_name" path:"true"`
 }
 
 type PutRepositoryByNameOptions struct {
-	ProjectName    string      `json:"project_name" not:"true"`
-	RepositoryName string      `json:"repository_name" not:"true"`
-	Repository     *Repository `json:"repository"`
+	ProjectName    string      `json:"project_name" path:"true"`
+	RepositoryName string      `json:"repository_name" path:"true"`
+	Repository     *Repository `json:"repository" query:"true"`
 }
 
 type DelRepositoryByNameOptions struct {
-	ProjectName    string `json:"project_name" not:"true"`
-	RepositoryName string `json:"repository_name" not:"true"`
+	ProjectName    string `json:"project_name" path:"true"`
+	RepositoryName string `json:"repository_name" path:"true"`
 }
