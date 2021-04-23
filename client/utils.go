@@ -27,7 +27,9 @@ func StructQuery(v interface{}) url.Values {
 				if values.Field(i).Bool() != false {
 					query.Set(types.Field(i).Tag.Get("json"), strconv.FormatBool(values.Field(i).Bool()))
 				} else {
-					query.Set(types.Field(i).Tag.Get("json"), strconv.FormatBool(false))
+					if types.Field(i).Tag.Get("default") != "true" {
+						query.Set(types.Field(i).Tag.Get("json"), "false")
+					}
 				}
 			case reflect.String:
 				if values.Field(i).String() != "" {

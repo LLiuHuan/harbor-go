@@ -22,9 +22,9 @@ func (cli *Client) GetProjectArtifactsList(ctx context.Context, options schema.G
 	serverResp, err := cli.get(ctx, path, query, header)
 	defer ensureReaderClosed(serverResp)
 	if err != nil {
+		fmt.Println(err)
 		return
 	}
-
 	err = json.NewDecoder(serverResp.body).Decode(&res)
 	return
 }

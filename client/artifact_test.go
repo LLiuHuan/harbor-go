@@ -18,6 +18,6 @@ func TestGetProjectArtifactsList(t *testing.T) {
 	}
 	projects, err := c.GetProjectArtifactsList(context.Background(), schema.GetProjectArtifactsListOptions{ProjectName: "fairman", RepositoryName: "nginx"})
 	for k, v := range projects {
-		fmt.Println(k, v.Digest)
+		fmt.Println(k, v.Tags)
 	}
 }

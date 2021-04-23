@@ -4,8 +4,8 @@ import "time"
 
 type GetProjectArtifactsListOptions struct {
 	// header
-	XRequestID             string `json:"x_request_id" header:"true" default:""`
-	XAcceptVulnerabilities string `json:"X-Accept-Vulnerabilities" header:"true" default="application/vnd.scanner.adapter.vuln.report.harbor+json; version=1.0"`
+	XRequestID             string `json:"X-Request-Id" header:"true" default:""`
+	XAcceptVulnerabilities string `json:"X-Accept-Vulnerabilities" header:"true" default:"application/vnd.scanner.adapter.vuln.report.harbor+json; version=1.0"`
 	// path
 	ProjectName    string `json:"project_name" path:"true"`
 	RepositoryName string `json:"repository_name" path:"true"`
