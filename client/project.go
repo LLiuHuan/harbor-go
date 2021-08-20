@@ -13,6 +13,9 @@ const (
 	PATH_LIST_PROJECT           = "/projects"
 	PATH_POST_PROJECT_METADATAS = "/projects/%d/metadatas"
 	PATH_GET_PROJECT_METADATAS  = "/projects/%d/metadatas"
+	PATH_HEAD_PROJECTS          = "/projects"
+	PATH_POST_PROJECTS          = "/projects"
+	PATH_DELETE_PROJECTS        = "/projects/%s"
 )
 
 func (cli *Client) ListProjects(ctx context.Context, options schema.ProjectListOptions) ([]schema.Project, error) {
@@ -38,7 +41,7 @@ func (cli *Client) ListProjects(ctx context.Context, options schema.ProjectListO
 	return projects, nil
 }
 
-// PostAddProjectMetadatas This endpoint is aimed to add metadata of a project.
+// PostProjectMetadata This endpoint is aimed to add metadata of a project.
 // url: /projects/{project_id}/metadatas
 // TODO: 怎么测试都不好使，一直提示权限问题 已经使用了最高级权限，还是无法调用成功
 func (cli *Client) PostProjectMetadata(ctx context.Context, options schema.PostProjectMetadataOptions) (resp schema.Response, err error) {
@@ -68,7 +71,7 @@ func (cli *Client) PostProjectMetadata(ctx context.Context, options schema.PostP
 		message = "Internal server errors."
 	}
 
-	resp = schema.OkWithDetailed(serverResp.statusCode, message, serverResp.body)
+	resp = schema.OkWithDetailed(serverResp.statusCode, serverResp.body, message)
 	return
 }
 
@@ -84,5 +87,66 @@ func (cli *Client) GetProjectMetadata(ctx context.Context, options schema.GetPro
 	}
 
 	err = json.NewDecoder(serverResp.body).Decode(&res)
+	return
+}
+
+// HeadProjects Check if the project name user provided already exists.
+// url: /projects
+func (cli *Client) HeadProjects(ctx context.Context, options schema.HeadProjects) (resp schema.Response, err error) {
+	query := StructQuery(options)
+	serverResp, err := cli.get(ctx, PATH_HEAD_PROJECTS, query, nil)
+	defer ensureReaderClosed(serverResp)
+	if err != nil {
+		return
+	}
+
+	var message string
+	switch serverResp.statusCode {
+	case 200:
+		message = "Success"
+	case 404:
+		message = "Not found"
+	case 500:
+		message = "Internal server error"
+	}
+
+	resp = schema.OkWithDetailed(serverResp.statusCode, serverResp.body, message)
+	return
+}
+
+// PostProjects Create a new project.
+// url: /projects
+func (cli *Client) PostProjects(ctx context.Context, opt schema.PostProjects) (resp schema.Response, err error) {
+	header := StructHeader(opt)
+	body := StructBody(opt)
+	serverResp, err := cli.post(ctx, PATH_POST_PROJECTS, nil, body, header)
+	var message string
+	switch serverResp.statusCode {
+	case 201:
+		message = "Created"
+	case 400:
+		message = "Bad request"
+	case 401:
+		message = "Unauthorized"
+	case 409:
+		message = "Conflict"
+	case 500:
+		message = "Internal server error"
+	default:
+		message = err.Error()
+	}
+
+	resp = schema.OkWithDetailed(serverResp.statusCode, serverResp.body, message)
+	return
+}
+
+// DeleteProjects Delete project by projectID
+// url: /projects/{project_name_or_id}
+func (cli *Client) DeleteProjects(ctx context.Context, opt schema.DeleteProjects) (serverRes ServerResponse, err error) {
+	header := StructHeader(opt)
+
+	path := fmt.Sprintf(PATH_DELETE_PROJECTS, opt.ProjectNameOrId)
+	serverRes, err = cli.delete(ctx, path, nil, header)
+
 	return
 }
