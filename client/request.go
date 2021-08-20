@@ -91,7 +91,7 @@ func (cli *Client) buildRequest(method, path string, body io.Reader, headers hea
 		return nil, err
 	}
 	req.SetBasicAuth(cli.basicAuth.Username, cli.basicAuth.Password)
-	req = cli.addHeaders(req, headers)
+	cli.addHeaders(req, headers)
 
 	req.URL.Host = cli.host
 	req.URL.Scheme = cli.scheme
@@ -103,7 +103,7 @@ func (cli *Client) buildRequest(method, path string, body io.Reader, headers hea
 	return req, nil
 }
 
-func (cli *Client) addHeaders(req *http.Request, headers headers) *http.Request {
+func (cli *Client) addHeaders(req *http.Request, headers headers) {
 	if headers != nil {
 		for _, header := range headers {
 			for k, v := range header {
@@ -111,7 +111,6 @@ func (cli *Client) addHeaders(req *http.Request, headers headers) *http.Request 
 			}
 		}
 	}
-	return req
 }
 
 func (cli *Client) doRequest(ctx context.Context, req *http.Request) (ServerResponse, error) {

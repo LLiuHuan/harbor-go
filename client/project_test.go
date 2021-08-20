@@ -70,7 +70,7 @@ func TestClient_PostProjects(t *testing.T) {
 		fmt.Println(err)
 	}
 	opt := schema.PostProjects{
-		ProjectName:  "test3",
+		ProjectName:  "redis123",
 		StorageLimit: -1,
 		Metadata:     schema.Metadata{Public: "false"},
 	}
