@@ -94,7 +94,7 @@ func (cli *Client) GetProjectMetadata(ctx context.Context, options schema.GetPro
 // url: /projects
 func (cli *Client) HeadProjects(ctx context.Context, options schema.HeadProjects) (resp schema.Response, err error) {
 	query := StructQuery(options)
-	serverResp, err := cli.get(ctx, PATH_HEAD_PROJECTS, query, nil)
+	serverResp, err := cli.head(ctx, PATH_HEAD_PROJECTS, query, nil)
 	defer ensureReaderClosed(serverResp)
 	if err != nil {
 		return
