@@ -5,17 +5,21 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/url"
+	"strconv"
+
+	"github.com/pkg/errors"
 
 	"github.com/lliuhuan/harbor-go/schema"
 )
 
 const (
-	PATH_LIST_PROJECT           = "/projects"
-	PATH_POST_PROJECT_METADATAS = "/projects/%d/metadatas"
-	PATH_GET_PROJECT_METADATAS  = "/projects/%d/metadatas"
-	PATH_HEAD_PROJECTS          = "/projects"
-	PATH_POST_PROJECTS          = "/projects"
-	PATH_DELETE_PROJECTS        = "/projects/%s"
+	PATH_LIST_PROJECT                    = "/projects"
+	PATH_POST_PROJECT_METADATAS          = "/projects/%d/metadatas"
+	PATH_GET_PROJECT_METADATAS           = "/projects/%d/metadatas"
+	PATH_HEAD_PROJECTS                   = "/projects"
+	PATH_POST_PROJECTS                   = "/projects"
+	PATH_DELETE_PROJECTS                 = "/projects/%s"
+	PATH_GET_PROJECT_ARTIFACTS_REFERENCE = "/projects/%s/repositories/%s/artifacts/%s"
 )
 
 func (cli *Client) ListProjects(ctx context.Context, options schema.ProjectListOptions) ([]schema.Project, error) {
@@ -149,4 +153,25 @@ func (cli *Client) DeleteProjects(ctx context.Context, opt schema.DeleteProjects
 	serverRes, err = cli.delete(ctx, path, nil, header)
 
 	return
+}
+
+// GetProjectArtifactsReference Get the specific artifact
+// url: /projects/{project_name}/repositories/{repository_name}/artifacts/{reference}
+func (cli *Client) GetProjectArtifactsReference(ctx context.Context, opt schema.GetProjectArtifactsReference) (res schema.ProjectArtifactsReference, err error) {
+	query := StructQuery(opt)
+	path := fmt.Sprintf(PATH_GET_PROJECT_ARTIFACTS_REFERENCE, opt.ProjectName, opt.RepositoryName, opt.Reference)
+	serverResp, err := cli.get(ctx, path, query, nil)
+	defer ensureReaderClosed(serverResp)
+	if err != nil {
+		return res, err
+	}
+
+	if serverResp.statusCode == 200 {
+		err = json.NewDecoder(serverResp.body).Decode(&res)
+		return res, err
+	} else {
+		var resNotFound schema.NotFound
+		err = json.NewDecoder(serverResp.body).Decode(&resNotFound)
+		return res, errors.New(strconv.Itoa(serverResp.statusCode))
+	}
 }
